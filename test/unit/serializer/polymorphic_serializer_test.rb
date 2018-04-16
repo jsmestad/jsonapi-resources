@@ -327,6 +327,14 @@ class PolymorphismTest < ActionDispatch::IntegrationTest
             attributes: {
               name: 'Bob Smith'
             },
+            relationships: {
+              doctor: {
+                links: {
+                  self: "/patients/1/relationships/doctor",
+                  related: "/patients/1/doctor"
+                }
+              }
+            }
           },
           {
             id: '1',
@@ -337,6 +345,14 @@ class PolymorphismTest < ActionDispatch::IntegrationTest
             attributes: {
               name: 'Henry Jones Jr'
             },
+            relationships: {
+              patients: {
+                links: {
+                  self: "/doctors/1/relationships/patients",
+                  related: "/doctors/1/patients"
+                }
+              }
+            }
           }
         ]
       },

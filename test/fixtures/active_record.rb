@@ -310,6 +310,10 @@ ActiveRecord::Schema.define do
     t.string :name
   end
 
+  create_table :medical_records, force: true do |t|
+    t.references :doctor
+    t.references :patient
+  end
   # special cases
 end
 
@@ -640,9 +644,18 @@ class Answer < ActiveRecord::Base
 end
 
 class Patient < ActiveRecord::Base
+  has_one :medical_record
+  has_one :doctor, through: :medical_record
+end
+
+class MedicalRecord < ActiveRecord::Base
+  belongs_to :patient
+  belongs_to :doctor
 end
 
 class Doctor < ActiveRecord::Base
+  has_many :medical_records
+  has_many :patients, through: :medical_records
 end
 
 module Api
@@ -1872,10 +1885,14 @@ end
 
 class PatientResource < JSONAPI::Resource
   attributes :name
+
+  has_one :doctor
 end
 
 class DoctorResource < JSONAPI::Resource
   attributes :name
+
+  has_many :patients
 end
 
 class RespondentResource < JSONAPI::Resource
