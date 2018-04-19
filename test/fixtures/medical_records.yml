@@ -1,0 +1,7 @@
+medical_records1:
+  doctor_id: 1
+  patient_id: 1
+
+medical_records2:
+  doctor_id: 1
+  patient_id: 2

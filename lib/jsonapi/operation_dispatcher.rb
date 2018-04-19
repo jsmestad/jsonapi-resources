@@ -54,9 +54,9 @@ module JSONAPI
     end
 
     def process_operation(operation)
-      with_default_handling do 
+      with_default_handling do
         operation.process
-      end        
+      end
     end
 
     def with_default_handling(&block)
@@ -76,7 +76,7 @@ module JSONAPI
     end
 
     def safe_run_callback(callback, error)
-      begin 
+      begin
         callback.call(error)
       rescue => e
         Rails.logger.error { "Error in error handling callback: #{e.message} #{e.backtrace.join("\n")}" }

@@ -104,6 +104,70 @@ class OperationDispatcherTest < Minitest::Test
     assert_equal(saturn.planet_type_id, 5)
   end
 
+  def test_replace_to_one_through_relationship
+    op = JSONAPI::OperationDispatcher.new
+
+    doctor1 = Doctor.find(1)
+    doctor2 = Doctor.find(2)
+    patient1 = Patient.find(1)
+    patient2 = Patient.find(2)
+    assert_equal(patient1.doctor.id, doctor1.id)
+    assert_equal(patient2.doctor.id, doctor1.id)
+
+    operations = [
+      JSONAPI::Operation.new(:replace_to_one_relationship,
+                             PatientResource,
+                             {
+                               resource_id: patient1.id,
+                               relationship_type: :doctor,
+                               key_value: doctor2.id
+                             }
+      )
+    ]
+
+    operation_results = op.process(operations)
+    # binding.pry
+
+    assert_kind_of(JSONAPI::OperationResults, operation_results)
+    assert_kind_of(JSONAPI::OperationResult, operation_results.results[0])
+    assert_equal(:no_content, operation_results.results[0].code)
+
+    patient1.reload
+    assert_equal(patient1.doctor.id, doctor2.id)
+
+    # Remove link
+    operations = [
+      JSONAPI::Operation.new(:replace_to_one_relationship,
+                             PlanetResource,
+                             {
+                               resource_id: saturn.id,
+                               relationship_type: :planet_type,
+                               key_value: nil
+                             }
+      )
+    ]
+
+    op.process(operations)
+    saturn.reload
+    assert_nil saturn.planet_type_id
+
+    # Reset
+    operations = [
+      JSONAPI::Operation.new(:replace_to_one_relationship,
+                             PlanetResource,
+                             {
+                               resource_id: saturn.id,
+                               relationship_type: :planet_type,
+                               key_value: 5
+                             }
+      )
+    ]
+
+    op.process(operations)
+    saturn.reload
+    assert_equal(saturn.planet_type_id, 5)
+  end
+
   def test_create_to_many_relationships
     op = JSONAPI::OperationDispatcher.new
 

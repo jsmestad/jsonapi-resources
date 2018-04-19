@@ -1,3 +1,6 @@
 patient1:
   id: 1
   name: Bob Smith
+patient2:
+  id: 2
+  name: Jane Smith
